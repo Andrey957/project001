@@ -27,10 +27,6 @@ func main() {
 		"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10,
 	}
 
-	arabicToRomanMap := map[int]string{
-		1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI", 7: "VII", 8: "VIII", 9: "IX", 10: "X",
-	}
-
 	a, aIsRoman := romanToArabicMap[aStr]
 	b, bIsRoman := romanToArabicMap[bStr]
 
@@ -43,7 +39,8 @@ func main() {
 		if result < 1 {
 			panic("Выдача паники, так как в римской системе нет отрицательных чисел.")
 		}
-		fmt.Println("Результат:", arabicToRomanMap[result])
+		// Используем новую функцию для преобразования результата в римские цифры
+		fmt.Println("Результат:", arabicToRoman(result))
 	} else {
 		aInt, err := strconv.Atoi(aStr)
 		if err != nil || aInt < 1 || aInt > 10 {
@@ -60,6 +57,7 @@ func main() {
 	}
 }
 
+// Функция для выполнения арифметических операций (сложение, вычитание, умножение, деление)
 func doOperation(a int, b int, operator string) int {
 	if operator == "+" {
 		return a + b
@@ -75,4 +73,39 @@ func doOperation(a int, b int, operator string) int {
 	} else {
 		panic("Выдача паники, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).")
 	}
+}
+
+// Функция для преобразования арабских чисел в римские цифры
+func arabicToRoman(num int) string {
+	if num <= 0 {
+		panic("Римские числа не могут быть меньше или равны нулю.")
+	}
+
+	romanNumerals := []struct {
+		Value  int
+		Symbol string
+	}{
+		{1000, "M"},
+		{900, "CM"},
+		{500, "D"},
+		{400, "CD"},
+		{100, "C"},
+		{90, "XC"},
+		{50, "L"},
+		{40, "XL"},
+		{10, "X"},
+		{9, "IX"},
+		{5, "V"},
+		{4, "IV"},
+		{1, "I"},
+	}
+
+	var result strings.Builder
+	for _, numeral := range romanNumerals {
+		for num >= numeral.Value {
+			result.WriteString(numeral.Symbol)
+			num -= numeral.Value
+		}
+	}
+	return result.String()
 }
